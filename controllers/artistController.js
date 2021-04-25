@@ -26,7 +26,7 @@ exports.getAllArtists = catchAsync(async (req, res, next) => {
 });
 
 exports.getArtist = catchAsync(async (req, res, next) => {
-  const doc = await Artist.findById(req.params.id);
+  const doc = await Artist.findById(req.params.artist_id);
 
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
@@ -38,7 +38,7 @@ exports.getArtist = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteArtist = catchAsync(async (req, res, next) => {
-  const doc = await Artist.findByIdAndDelete(req.params.id);
+  const doc = await Artist.findByIdAndDelete(req.params.artist_id);
 
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));

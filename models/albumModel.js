@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Track = require('./trackModel');
 
 const albumSchema = new mongoose.Schema({
   _id: {
@@ -37,6 +38,11 @@ albumSchema.pre('save', async function (next) {
   this.artist += `/artists/${this.artist_id}`;
   this.self += `/albums/${this._id}`;
   this.tracks += `/albums/${this._id}/tracks`;
+  next();
+});
+
+albumSchema.pre('remove', function (next) {
+  Track.remove({ album_id: this._id }).exec();
   next();
 });
 

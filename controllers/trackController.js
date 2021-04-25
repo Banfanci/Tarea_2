@@ -24,7 +24,7 @@ exports.getAllTracks = catchAsync(async (req, res, next) => {
 });
 
 exports.getTrack = catchAsync(async (req, res, next) => {
-  const doc = await Track.findById(req.params.id);
+  const doc = await Track.findById(req.params.track_id);
 
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
@@ -36,7 +36,7 @@ exports.getTrack = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteTrack = catchAsync(async (req, res, next) => {
-  const doc = await Track.findByIdAndDelete(req.params.id);
+  const doc = await Track.findByIdAndDelete(req.params.track_id);
 
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));

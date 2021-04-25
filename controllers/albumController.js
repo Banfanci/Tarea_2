@@ -7,6 +7,7 @@ exports.createAlbum = catchAsync(async (req, res, next) => {
   req.body.self = req.headers.host;
   req.body.artist = req.headers.host;
   req.body.tracks = req.headers.host;
+  req.body.artist_id = req.params.artist_id;
 
   const newDoc = await Album.create(req.body);
 
@@ -25,7 +26,7 @@ exports.getAllAlbums = catchAsync(async (req, res, next) => {
 });
 
 exports.getAlbum = catchAsync(async (req, res, next) => {
-  const doc = await Album.findById(req.params.id);
+  const doc = await Album.findById(req.params.album_id);
 
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
@@ -37,7 +38,7 @@ exports.getAlbum = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteAlbum = catchAsync(async (req, res, next) => {
-  const doc = await Album.findByIdAndDelete(req.params.id);
+  const doc = await Album.findByIdAndDelete(req.params.album_id);
 
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
