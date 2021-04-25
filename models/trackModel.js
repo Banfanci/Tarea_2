@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const cancionSchema = new mongoose.Schema({
+const trackSchema = new mongoose.Schema({
   _id: {
     type: String,
     required: true,
@@ -34,7 +34,7 @@ const cancionSchema = new mongoose.Schema({
   },
 });
 
-cancionSchema.pre('save', async function (next) {
+trackSchema.pre('save', async function (next) {
   if (!this.new) return next();
 
   this._id = Buffer.from(`${this.name}:${this.album_id}`)
@@ -46,6 +46,6 @@ cancionSchema.pre('save', async function (next) {
   next();
 });
 
-const Cancion = mongoose.model('Cancion', cancionSchema);
+const Track = mongoose.model('Track', trackSchema);
 
-module.exports = Cancion;
+module.exports = Track;

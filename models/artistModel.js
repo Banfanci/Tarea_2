@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const artistaSchema = new mongoose.Schema({
+const artistSchema = new mongoose.Schema({
   _id: {
     type: String,
     required: true,
@@ -25,7 +25,7 @@ const artistaSchema = new mongoose.Schema({
   },
 });
 
-artistaSchema.pre('save', async function (next) {
+artistSchema.pre('save', async function (next) {
   if (!this.new) return next();
 
   this._id = Buffer.from(`${this.name}`).toString('base64').substring(0, 20);
@@ -35,19 +35,6 @@ artistaSchema.pre('save', async function (next) {
   next();
 });
 
-// Virtual populate
-artistaSchema.virtual('albums_objects', {
-  ref: 'Album',
-  foreignField: 'artist_id',
-  localField: '_id',
-});
+const Artist = mongoose.model('Artist', artistSchema);
 
-artistaSchema.virtual('tracks_objects', {
-  ref: 'Cancion',
-  foreignField: 'artist_id',
-  localField: '_id',
-});
-
-const Artista = mongoose.model('Artista', artistaSchema);
-
-module.exports = Artista;
+module.exports = Artist;

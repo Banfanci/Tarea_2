@@ -40,13 +40,6 @@ albumSchema.pre('save', async function (next) {
   next();
 });
 
-// Virtual populate
-albumSchema.virtual('tracks_objects', {
-  ref: 'Cancion',
-  foreignField: 'album_id',
-  localField: '_id',
-});
-
 const Album = mongoose.model('Album', albumSchema);
 
 module.exports = Album;
