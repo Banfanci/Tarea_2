@@ -6,7 +6,7 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  const value = err.errmsg.match(/(["'])(?:(?=(\\?))\2.)*?\1/)[0];
+  const value = err.message.match(/(["'])(?:(?=(\\?))\2.)*?\1/)[0];
   const message = `Duplicate field value: ${value}. Please use another value!`;
   return new AppError(message, 409);
 };
@@ -28,19 +28,13 @@ const sendErrorDev = (err, req, res) =>
 const sendErrorProd = (err, req, res) => {
   // B) RENDERED WEBSITE
   if (err.isOperational) {
-    return res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
+    res.status(err.statusCode).json();
   }
-  return res.status(500).json({
-    status: 'error',
-    message: 'Something went very wrong!',
-  });
+  res.status(405).json();
 };
 
 module.exports = (err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
+  err.statusCode = err.statusCode || 405;
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {

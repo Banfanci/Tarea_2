@@ -9,7 +9,12 @@ exports.createArtist = catchAsync(async (req, res, next) => {
   req.body.albums = req.headers.host;
   req.body.tracks = req.headers.host;
 
-  const newDoc = await Artist.create(req.body);
+  const newDoc = await Artist.create(req.body).catch(async (err) => {
+    if (err.code === 11000) {
+      const doc = await Artist.findOne({ id: err.keyValue.id });
+      res.status(409).json(doc);
+    }
+  });
 
   res.status(201).json(newDoc);
 });
@@ -22,7 +27,7 @@ exports.getAllArtists = catchAsync(async (req, res, next) => {
 });
 
 exports.getArtist = catchAsync(async (req, res, next) => {
-  const doc = await Artist.find({ id: req.params.artist_id });
+  const doc = await Artist.findOne({ id: req.params.artist_id });
 
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
@@ -57,7 +62,7 @@ exports.getAllTracksOfArtist = catchAsync(async (req, res, next) => {
 });
 
 exports.playAllTracksOfArtist = catchAsync(async (req, res, next) => {
-  const doc = await Artist.find({ id: req.params.artist_id });
+  const doc = await Artist.findOne({ id: req.params.artist_id });
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
   }

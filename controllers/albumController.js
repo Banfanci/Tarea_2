@@ -1,3 +1,4 @@
+const Artist = require('../models/artistModel');
 const Album = require('../models/albumModel');
 const Track = require('../models/trackModel');
 const catchAsync = require('../utils/catchAsync');
@@ -9,7 +10,18 @@ exports.createAlbum = catchAsync(async (req, res, next) => {
   req.body.tracks = req.headers.host;
   req.body.artist_id = req.params.artist_id;
 
-  const newDoc = await Album.create(req.body);
+  const doc = await Artist.findOne({ id: req.params.artist_id });
+
+  if (!doc) {
+    return next(new AppError('No document found with that ID', 422));
+  }
+
+  const newDoc = await Album.create(req.body).catch(async (err) => {
+    if (err.code === 11000) {
+      const rdoc = await Album.findOne({ id: err.keyValue.id });
+      res.status(409).json(rdoc);
+    }
+  });
 
   res.status(201).json(newDoc);
 });
@@ -22,7 +34,7 @@ exports.getAllAlbums = catchAsync(async (req, res, next) => {
 });
 
 exports.getAlbum = catchAsync(async (req, res, next) => {
-  const doc = await Album.find({ id: req.params.album_id });
+  const doc = await Album.findOne({ id: req.params.album_id });
 
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
@@ -50,7 +62,7 @@ exports.getAllTracksOfAlbum = catchAsync(async (req, res, next) => {
 });
 
 exports.playAllTracksOfAlbum = catchAsync(async (req, res, next) => {
-  const doc = await Album.find({ id: req.params.album_id });
+  const doc = await Album.findOne({ id: req.params.album_id });
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
   }
