@@ -16,4 +16,8 @@ router
   .get(albumController.getAllTracksOfAlbum)
   .post(trackController.createTrack);
 
+router
+  .route('/:album_id/tracks/play')
+  .put(albumController.playAllTracksOfAlbum);
+
 module.exports = router;

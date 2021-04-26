@@ -10,4 +10,6 @@ router
   .get(trackController.getTrack)
   .delete(trackController.deleteTrack);
 
+router.route('/:track_id/play').put(trackController.playTrack);
+
 module.exports = router;

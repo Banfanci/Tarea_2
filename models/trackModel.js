@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const trackSchema = new mongoose.Schema({
-  _id: {
+  id: {
     type: String,
-    required: true,
     unique: true,
+    index: true,
+    required: true,
   },
   name: {
     type: String,
@@ -16,6 +17,7 @@ const trackSchema = new mongoose.Schema({
   },
   times_played: {
     type: Number,
+    default: 0,
   },
   artist: {
     type: String,
@@ -34,15 +36,16 @@ const trackSchema = new mongoose.Schema({
   },
 });
 
-trackSchema.pre('save', async function (next) {
-  if (!this.new) return next();
-
-  this._id = Buffer.from(`${this.name}:${this.album_id}`)
-    .toString('base64')
-    .substring(0, 20);
-  this.artist += `/artists/${this.artist_id}`;
-  this.self += `/tracks/${this._id}`;
-  this.album += `/albums/${this.album_id}`;
+trackSchema.pre('validate', async function (next) {
+  if (this.isNew) {
+    const id = Buffer.from(`${this.name}:${this.album_id}`)
+      .toString('base64')
+      .substring(0, 20);
+    this.id = id;
+    this.artist += `/artists/${this.artist_id}`;
+    this.self += `/tracks/${id}`;
+    this.album += `/albums/${this.album_id}`;
+  }
   next();
 });
 

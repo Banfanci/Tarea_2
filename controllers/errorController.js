@@ -18,22 +18,24 @@ const handleValidationErrorDB = (err) => {
 };
 
 const sendErrorDev = (err, req, res) =>
-  res.status(err.statusCode).render('error', {
-    title: 'Something went wrong!',
+  res.status(err.statusCode).json({
+    status: err.status,
+    error: err,
     message: err.message,
+    stack: err.stack,
   });
 
 const sendErrorProd = (err, req, res) => {
   // B) RENDERED WEBSITE
   if (err.isOperational) {
-    return res.status(err.statusCode).render('error', {
-      title: 'Something went wrong!',
+    return res.status(err.statusCode).json({
+      status: err.status,
       message: err.message,
     });
   }
-  return res.status(500).render('error', {
-    title: 'Something went very wrong',
-    message: 'Please try again later',
+  return res.status(500).json({
+    status: 'error',
+    message: 'Something went very wrong!',
   });
 };
 

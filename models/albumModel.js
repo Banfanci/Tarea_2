@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
-const Track = require('./trackModel');
 
 const albumSchema = new mongoose.Schema({
-  _id: {
+  id: {
     type: String,
-    required: true,
     unique: true,
+    index: true,
+    required: true,
   },
   name: {
     type: String,
     required: [true, 'Please tell us your name'],
   },
   genre: {
-    type: Number,
+    type: String,
     required: [true, 'Please tell us your genre'],
   },
   artist: {
@@ -29,20 +29,15 @@ const albumSchema = new mongoose.Schema({
   },
 });
 
-albumSchema.pre('save', async function (next) {
-  if (!this.new) return next();
-
-  this._id = Buffer.from(`${this.name}:${this.artist_id}`)
-    .toString('base64')
-    .substring(0, 20);
-  this.artist += `/artists/${this.artist_id}`;
-  this.self += `/albums/${this._id}`;
-  this.tracks += `/albums/${this._id}/tracks`;
-  next();
-});
-
-albumSchema.pre('remove', function (next) {
-  Track.remove({ album_id: this._id }).exec();
+albumSchema.pre('validate', async function (next) {
+  if (this.isNew) {
+    this.id = Buffer.from(`${this.name}:${this.artist_id}`)
+      .toString('base64')
+      .substring(0, 20);
+    this.artist += `/artists/${this.artist_id}`;
+    this.self += `/albums/${this.id}`;
+    this.tracks += `/albums/${this.id}/tracks`;
+  }
   next();
 });
 

@@ -21,4 +21,8 @@ router
 
 router.route('/:artist_id/tracks').get(artistController.getAllTracksOfArtist);
 
+router
+  .route('/:artist_id/albums/play')
+  .put(artistController.playAllTracksOfArtist);
+
 module.exports = router;
