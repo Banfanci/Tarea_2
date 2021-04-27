@@ -58,6 +58,11 @@ exports.deleteAlbum = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllTracksOfAlbum = catchAsync(async (req, res, next) => {
+  const doc = await Album.findOne({ id: req.params.album_id });
+  if (!doc) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+
   const docs = await Track.find({ album_id: req.params.album_id });
 
   res.status(200).json(docs);
