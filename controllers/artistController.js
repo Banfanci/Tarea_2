@@ -52,12 +52,22 @@ exports.deleteArtist = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllAlbumsOfArtist = catchAsync(async (req, res, next) => {
+  const doc = await Artist.findOne({ id: req.params.artist_id });
+  if (!doc) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+
   const docs = await Album.find({ artist_id: req.params.artist_id });
 
   res.status(200).json(docs);
 });
 
 exports.getAllTracksOfArtist = catchAsync(async (req, res, next) => {
+  const doc = await Artist.findOne({ id: req.params.artist_id });
+  if (!doc) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+
   const docs = await Track.find({ artist_id: req.params.artist_id });
 
   res.status(200).json(docs);
