@@ -20,6 +20,8 @@ exports.createTrack = catchAsync(async (req, res, next) => {
     if (err.code === 11000) {
       const rdoc = await Track.findOne({ id: err.keyValue.id });
       res.status(409).json(rdoc);
+    } else {
+      return next(new AppError(err.message, 400));
     }
   });
 
