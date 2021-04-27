@@ -40,7 +40,7 @@ trackSchema.pre('validate', async function (next) {
   if (this.isNew) {
     const id = Buffer.from(`${this.name}:${this.album_id}`)
       .toString('base64')
-      .substring(0, 20);
+      .substring(0, 22);
     this.id = id;
     this.artist += `/artists/${this.artist_id}`;
     this.self += `/tracks/${id}`;

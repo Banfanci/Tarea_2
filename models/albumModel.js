@@ -33,7 +33,7 @@ albumSchema.pre('validate', async function (next) {
   if (this.isNew) {
     this.id = Buffer.from(`${this.name}:${this.artist_id}`)
       .toString('base64')
-      .substring(0, 20);
+      .substring(0, 22);
     this.artist += `/artists/${this.artist_id}`;
     this.self += `/albums/${this.id}`;
     this.tracks += `/albums/${this.id}/tracks`;

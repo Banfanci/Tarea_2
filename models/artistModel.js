@@ -28,7 +28,7 @@ const artistSchema = new mongoose.Schema({
 
 artistSchema.pre('validate', async function (next) {
   if (this.isNew) {
-    const id = Buffer.from(`${this.name}`).toString('base64').substring(0, 20);
+    const id = Buffer.from(`${this.name}`).toString('base64').substring(0, 22);
 
     this.id = id;
     this.self += `/artists/${id}`;
