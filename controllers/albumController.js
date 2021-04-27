@@ -20,6 +20,8 @@ exports.createAlbum = catchAsync(async (req, res, next) => {
     if (err.code === 11000) {
       const rdoc = await Album.findOne({ id: err.keyValue.id });
       res.status(409).json(rdoc);
+    } else {
+      return next(new AppError(err.message, 400));
     }
   });
 

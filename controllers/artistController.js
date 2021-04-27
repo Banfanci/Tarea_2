@@ -13,6 +13,8 @@ exports.createArtist = catchAsync(async (req, res, next) => {
     if (err.code === 11000) {
       const doc = await Artist.findOne({ id: err.keyValue.id });
       res.status(409).json(doc);
+    } else {
+      return next(new AppError(err.message, 400));
     }
   });
 
